@@ -75,6 +75,26 @@ void getstring(char *buf,DEX32_DDL_INFO *dev)
     buf[i]=0;
   };
 
+
+
+void addToHistory(char * string, entry * head){
+  entry * temp;
+  temp = (entry*)malloc(sizeof(entry));
+  temp->command_string = string;
+  temp->next = NULL; 
+
+  if (head==NULL){
+    head = temp;
+  }
+  else {
+    while(head->next != NULL){
+      head = head->next;
+    }
+    head->next = temp;
+  }
+}
+
+
 /*Show information about memory usage. This function is also useful
   for detecting memory leaks*/
 void meminfo()
@@ -519,7 +539,8 @@ int console_execute(const char *str)
   char *u;
   int command_length = 0;
   signed char mouse_x,mouse_y,last_mouse_x=0,last_mouse_y=0;
-  
+  //declare history list
+  entry * history;
   //make a copy so that strtok wouldn't ruin str
   strcpy(temp,str);
   u=strtok(temp," ");
@@ -527,7 +548,8 @@ int console_execute(const char *str)
   if (u==0) return;
   
   command_length = strlen(u);    
-    
+  // addToHistory(u, history);
+  
     //check if a pathcut command was executed
     if (u[command_length - 1] == ':') 
                 {
@@ -959,6 +981,7 @@ int console_execute(const char *str)
                printf("console: cannot find device.\n");   
 
              }
+
              else
              {
                if (u!=0)
@@ -970,6 +993,7 @@ int console_execute(const char *str)
                  }
 
               }
+
 //normal termination
 return 1;
 };
@@ -1036,6 +1060,12 @@ void console_main()
                sendtokeyb("\r",&_q);
               }
                else   
+    //up command
+    // if(strcmp(s, "ù")==0){
+    //           {
+
+    //           }
+    // }            
     console_execute(s);
     } while (1);
   ;};
