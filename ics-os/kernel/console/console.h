@@ -34,8 +34,14 @@
 
 
 int console_first = 0;
+typedef struct node{
+  char *command_string;
+  struct ndoe * next;
+}entry;
+
 void console_main();
 void getstring(char *buf,DEX32_DDL_INFO *dev);
+void addToHistory(char *string, entry *head);
 void meminfo();
 int delfile(char *fname);
 int user_fork();

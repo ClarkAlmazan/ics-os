@@ -1,0 +1,11 @@
+#kernel files
+ics-os/kernel/Kernel32.bin
+ics-os/kernel/vmdex
+ics-os/kernel/mapfile.txt
+
+#object files
+*.o
+
+#os files
+ics-os/vmdex
+ics-os/ics-os-floppy.img
