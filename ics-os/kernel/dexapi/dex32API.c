@@ -187,6 +187,8 @@ void api_init()
      api_addsystemcall(0x9D,write_text,0,0);
      api_addsystemcall(0x9E,write_char,0,0);
      api_addsystemcall(0x9F,my_syscall,0,0);
+     api_addsystemcall(0xA0, addToHistory, 0, 0);
+     api_addsystemcall(0xA1, show_history, 0, 0);
 };
 
 
