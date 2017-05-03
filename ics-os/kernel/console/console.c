@@ -927,6 +927,40 @@ int console_execute(const char *str)
                       time_systime.sec,time());
              }
              else
+      if (strcmp(u,"settime")==0)
+             {
+              char *u2;
+              int num;
+              u=strtok(0," ");
+              if (u!=0)
+               {
+                   do {           
+                   if (strcmp(u,"-h")==0){
+                      u2=strtok(0," ");
+                      num = atoi(u2);
+                      if(num > 12) printf("Wrong input\n");
+                      else time_systime.hour = num;
+                   }
+                   if (strcmp(u,"-m")==0){
+                      u2=strtok(0," ");
+                      num = atoi(u2);
+                      if(num > 59) printf("Wrong input\n");
+                      else time_systime.min = num;
+                      
+                   }
+                   if (strcmp(u,"-s")==0){
+                      u2=strtok(0," ");
+                      num = atoi(u2);
+                      if(num > 99) printf("wrong input\n");
+                      else time_systime.sec = num;
+                   }
+                   u=strtok(0," ");
+                   } while (u!=0);
+               }else{
+                printf("missing parameters\n");
+               }
+             }
+             else        
     if (strcmp(u,"set")==0)
              {
               u=strtok(0," ");
@@ -1024,6 +1058,8 @@ void console_main()
     Dex32SetProcessDDL(myddl,getprocessid());
     myfg = fg_register(myddl,getprocessid());
     fg_setforeground( myfg->id );
+
+
 
 
     clrscr();
