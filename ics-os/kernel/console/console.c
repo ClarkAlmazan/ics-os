@@ -602,6 +602,11 @@ int console_execute(const char *str)
                 if (getch()=='q') return -1;
                 }
                 else
+    if (strcmp(u,"nproc")==0)
+                {
+                sysconf(_SC_NPROCESSORS_ONLN);
+                }
+                else
     if (strcmp(u,"lspcut")==0)
                 vfs_showpathcuts();
                 else
@@ -1049,6 +1054,11 @@ void console_main()
     char last[256]="";
     char console_fmt[256]="%cdir% %% ";
     char console_prompt[256]="cmd >";
+    const int upHour = time_systime.hour;
+    const int upMin = time_systime.min;
+    const int upSec = time_systime.sec;
+
+    
     
     DWORD ptr;
     
@@ -1080,6 +1090,8 @@ void console_main()
     textcolor(LIGHTBLUE);
     printf("%s",console_prompt);
     textcolor(WHITE);
+    
+    printf("UPTIME %d : %d . %d",upHour,upMin,upSec);
     
     if (strcmp(s,"@@")!=0&&
         strcmp(s,"!!")!=0)
