@@ -26,6 +26,7 @@
 */
 
 #include "console.h"
+
   
 /*A console mode get string function terminates
 upon receving \r */
@@ -604,7 +605,7 @@ int console_execute(const char *str)
                 else
     if (strcmp(u,"nproc")==0)
                 {
-                sysconf(_SC_NPROCESSORS_ONLN);
+                
                 }
                 else
     if (strcmp(u,"lspcut")==0)
@@ -949,6 +950,7 @@ int console_execute(const char *str)
                    if (strcmp(u,"-m")==0){
                       u2=strtok(0," ");
                       num = atoi(u2);
+                      printf("%d\n",num);
                       if(num > 59) printf("Wrong input\n");
                       else time_systime.min = num;
                       
@@ -956,7 +958,7 @@ int console_execute(const char *str)
                    if (strcmp(u,"-s")==0){
                       u2=strtok(0," ");
                       num = atoi(u2);
-                      if(num > 99) printf("wrong input\n");
+                      if(num > 59) printf("wrong input\n");
                       else time_systime.sec = num;
                    }
                    u=strtok(0," ");
@@ -965,7 +967,7 @@ int console_execute(const char *str)
                 printf("missing parameters\n");
                }
              }
-             else        
+             else    
     if (strcmp(u,"set")==0)
              {
               u=strtok(0," ");
@@ -1091,8 +1093,6 @@ void console_main()
     printf("%s",console_prompt);
     textcolor(WHITE);
     
-    printf("UPTIME %d : %d . %d",upHour,upMin,upSec);
-    
     if (strcmp(s,"@@")!=0&&
         strcmp(s,"!!")!=0)
     strcpy(last,s);
@@ -1107,7 +1107,25 @@ void console_main()
                sendtokeyb(last,&_q);
                sendtokeyb("\r",&_q);
               }
-               else   
+               else
+    if (strcmp(s,"uptime")==0)
+             {int tempHour,tempMin;
+
+
+              tempHour = ((upHour - time_systime.hour));
+              tempMin = (upMin - time_systime.min);
+              
+              if(tempHour < 0){
+                tempHour = tempHour/-1;
+              }      
+
+              if(tempMin < 0){
+                tempMin = tempMin/-1;
+              }         
+
+              printf("%dhr %dmin \n",tempHour,tempMin);
+             }
+             else       
     //up command
     // if(strcmp(s, "ù")==0){
     //           {
