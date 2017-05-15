@@ -169,8 +169,9 @@ void time_handler()
              time_count++;
 
              //synchronize with the clock every 10 minutes
-             if (time_systime.min%10==0)
-                 getdatetime(&time_systime);
+             //disabled to make setTime work
+             // if (time_systime.min%10==0)
+             //     getdatetime(&time_systime);
          };
 
    ticks++;
