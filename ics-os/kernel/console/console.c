@@ -1024,7 +1024,40 @@ int console_execute(const char *str)
           //it takes note of the number of seconds since boot
           printf("%d seconds since boot \n", time_count);
          }
-         else                  
+         else
+    if (strcmp(u, "chmod")==0)
+          {
+            DWORD attb = 0;
+            char * filename;
+            char * args;
+            filename = strtok(0," ");
+            args = strtok(0,"");
+            printf("Filename: %s \t", filename);
+            printf("Attributes: %s\n", args);
+            file_PCB *f = openfilex(filename,FILE_APPEND);
+            if (strcmp(args,"help")==0){
+              printf("chmod is a command that modifies file permissions.\n");
+              printf("Usage: chmod <filename> <attributes>\n");
+              printf("Attributes format: xrw, --w, x-w, -rw, x--, etc.\n");
+              return;
+            }
+            if (strlen(args)!=3){
+              printf("Invalid attributes. Use \"chmod help\" for usage info.\n");
+              return;
+            } 
+            else{
+              printf("%c\n", args[0]);
+              if (args[0]=='x') attb = attb | FILE_OEXE;
+              if (args[1]=='r') attb = attb | FILE_OREAD;
+              if (args[2]=='w') attb = attb | FILE_OWRITE;
+              // printf("%ld\n", attb);
+              f->ptr->attb = attb;
+            }
+
+            
+            fclose(f);
+          }
+          else                       
     if (u[0]=='$')
              {
                int i, devid;
@@ -1131,7 +1164,7 @@ void console_main()
 
 
    
-    if (strcmp(s,"!")==0)
+    if (strcmp(s,"ù")==0)
                sendtokeyb(last,&_q);
                else
     if (strcmp(s,"!!")==0)
