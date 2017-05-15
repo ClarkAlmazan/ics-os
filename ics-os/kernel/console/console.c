@@ -27,9 +27,11 @@
 
 #include "console.h"
 
+
 entry * history;
 entry * last_command;
 entry * reset_history;
+
 /*A console mode get string function terminates
 upon receving \r */
 void getstring(char *buf,DEX32_DDL_INFO *dev)
@@ -613,6 +615,11 @@ int console_execute(const char *str)
                 if (getch()=='q') return -1;
                 }
                 else
+    if (strcmp(u,"nproc")==0)
+                {
+                
+                }
+                else
     if (strcmp(u,"lspcut")==0)
                 vfs_showpathcuts();
                 else
@@ -938,6 +945,41 @@ int console_execute(const char *str)
                       time_systime.sec,time());
              }
              else
+      if (strcmp(u,"settime")==0)
+             {
+              char *u2;
+              int num;
+              u=strtok(0," ");
+              if (u!=0)
+               {
+                   do {           
+                   if (strcmp(u,"-h")==0){
+                      u2=strtok(0," ");
+                      num = atoi(u2);
+                      if(num > 12) printf("Wrong input\n");
+                      else time_systime.hour = num;
+                   }
+                   if (strcmp(u,"-m")==0){
+                      u2=strtok(0," ");
+                      num = atoi(u2);
+                      printf("%d\n",num);
+                      if(num > 59) printf("Wrong input\n");
+                      else time_systime.min = num;
+                      
+                   }
+                   if (strcmp(u,"-s")==0){
+                      u2=strtok(0," ");
+                      num = atoi(u2);
+                      if(num > 59) printf("wrong input\n");
+                      else time_systime.sec = num;
+                   }
+                   u=strtok(0," ");
+                   } while (u!=0);
+               }else{
+                printf("missing parameters\n");
+               }
+             }
+             else    
     if (strcmp(u,"set")==0)
              {
               u=strtok(0," ");
@@ -1032,7 +1074,12 @@ void console_main()
     char last[256]="";
     char console_fmt[256]="%cdir% %% ";
     char console_prompt[256]="cmd >";
+    const int upHour = time_systime.hour;
+    const int upMin = time_systime.min;
+    const int upSec = time_systime.sec;
 
+    
+    
     DWORD ptr;
     
     myddl =Dex32CreateDDL();    
@@ -1041,6 +1088,8 @@ void console_main()
     Dex32SetProcessDDL(myddl,getprocessid());
     myfg = fg_register(myddl,getprocessid());
     fg_setforeground( myfg->id );
+
+
 
 
     clrscr();
@@ -1086,7 +1135,25 @@ void console_main()
                sendtokeyb(last,&_q);
                sendtokeyb("\r",&_q);
               }
-               else   
+               else
+    if (strcmp(s,"uptime")==0)
+             {int tempHour,tempMin;
+
+
+              tempHour = ((upHour - time_systime.hour));
+              tempMin = (upMin - time_systime.min);
+              
+              if(tempHour < 0){
+                tempHour = tempHour/-1;
+              }      
+
+              if(tempMin < 0){
+                tempMin = tempMin/-1;
+              }         
+
+              printf("%dhr %dmin \n",tempHour,tempMin);
+             }
+             else       
     //up command
     // if(strcmp(s, "ù")==0){
     //           {
