@@ -109,6 +109,7 @@ void show_history(){
   while (temp!=NULL){
     printf("%s\n", temp->command_string);
     temp = temp->next;
+
   }
 }
 
@@ -1017,6 +1018,13 @@ int console_execute(const char *str)
               }
     
               else            
+    if (strcmp(u,"uptime")==0)
+         {
+          //time_count is from time.c
+          //it takes note of the number of seconds since boot
+          printf("%d seconds since boot \n", time_count);
+         }
+         else                  
     if (u[0]=='$')
              {
                int i, devid;
@@ -1074,10 +1082,6 @@ void console_main()
     char last[256]="";
     char console_fmt[256]="%cdir% %% ";
     char console_prompt[256]="cmd >";
-    const int upHour = time_systime.hour;
-    const int upMin = time_systime.min;
-    const int upSec = time_systime.sec;
-
     
     
     DWORD ptr;
@@ -1136,24 +1140,7 @@ void console_main()
                sendtokeyb("\r",&_q);
               }
                else
-    if (strcmp(s,"uptime")==0)
-             {int tempHour,tempMin;
-
-
-              tempHour = ((upHour - time_systime.hour));
-              tempMin = (upMin - time_systime.min);
-              
-              if(tempHour < 0){
-                tempHour = tempHour/-1;
-              }      
-
-              if(tempMin < 0){
-                tempMin = tempMin/-1;
-              }         
-
-              printf("%dhr %dmin \n",tempHour,tempMin);
-             }
-             else       
+ 
     //up command
     // if(strcmp(s, "ù")==0){
     //           {

@@ -487,7 +487,10 @@ void dex_init()
     
     //create the foreground manager
     fg_pid = createkthread((void*)fg_updateinfo,"fg_manager",20000);
-    
+
+    //initialize time
+    time_init();
+
     if (baremode) console_first++;
     printf("dex32_startup(): Running console thread\n");
     
