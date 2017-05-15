@@ -27,7 +27,11 @@
 
 #include "console.h"
 
-  
+
+entry * history;
+entry * last_command;
+entry * reset_history;
+
 /*A console mode get string function terminates
 upon receving \r */
 void getstring(char *buf,DEX32_DDL_INFO *dev)
@@ -78,23 +82,35 @@ void getstring(char *buf,DEX32_DDL_INFO *dev)
 
 
 
-void addToHistory(char * string, entry * head){
-  entry * temp;
-  temp = (entry*)malloc(sizeof(entry));
+void addToHistory(char * string){
+  entry * temp, *head = history;
+  unsigned int size = sizeof(entry);
+  temp = (entry*)malloc(size);
   temp->command_string = string;
   temp->next = NULL; 
 
-  if (head==NULL){
-    head = temp;
+  if (history==NULL){
+    history = temp;
+    reset_history = temp;
   }
   else {
     while(head->next != NULL){
       head = head->next;
     }
     head->next = temp;
+    last_command = temp;
   }
+  printf("added to history: %s\n", temp->command_string);
 }
 
+void show_history(){
+  entry * temp = history;
+  printf("Recent commands:\n");
+  while (temp!=NULL){
+    printf("%s\n", temp->command_string);
+    temp = temp->next;
+  }
+}
 
 /*Show information about memory usage. This function is also useful
   for detecting memory leaks*/
@@ -540,8 +556,6 @@ int console_execute(const char *str)
   char *u;
   int command_length = 0;
   signed char mouse_x,mouse_y,last_mouse_x=0,last_mouse_y=0;
-  //declare history list
-  entry * history;
   //make a copy so that strtok wouldn't ruin str
   strcpy(temp,str);
   u=strtok(temp," ");
@@ -549,8 +563,6 @@ int console_execute(const char *str)
   if (u==0) return;
   
   command_length = strlen(u);    
-  // addToHistory(u, history);
-  
     //check if a pathcut command was executed
     if (u[command_length - 1] == ':') 
                 {
@@ -999,6 +1011,12 @@ int console_execute(const char *str)
               }
     
               else
+    if (strcmp(u,"history")==0)
+              {
+               show_history();
+              }
+    
+              else            
     if (u[0]=='$')
              {
                int i, devid;
@@ -1076,6 +1094,7 @@ void console_main()
 
     clrscr();
     
+
     
           
     strcpy(last,"");
@@ -1092,12 +1111,21 @@ void console_main()
     textcolor(LIGHTBLUE);
     printf("%s",console_prompt);
     textcolor(WHITE);
+
+
+
+
+
     
     if (strcmp(s,"@@")!=0&&
         strcmp(s,"!!")!=0)
     strcpy(last,s);
+
+
     
     getstring(s,myddl);
+
+
    
     if (strcmp(s,"!")==0)
                sendtokeyb(last,&_q);
@@ -1131,7 +1159,8 @@ void console_main()
     //           {
 
     //           }
-    // }            
+    // }   
+    addToHistory(s);
     console_execute(s);
     } while (1);
   ;};
