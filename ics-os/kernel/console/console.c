@@ -1022,7 +1022,13 @@ int console_execute(const char *str)
          {
           //time_count is from time.c
           //it takes note of the number of seconds since boot
+          int hour = time_count / 3600;
+          int min = (time_count % 3600) / 60;
+          int sec = (time_count % 3600) % 60;
+
+
           printf("%d seconds since boot \n", time_count);
+          printf("%d : %d . %d since boot \n",hour,min,sec);
          }
          else
     if (strcmp(u, "chmod")==0)
