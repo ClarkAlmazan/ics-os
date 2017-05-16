@@ -86,7 +86,7 @@ void addToHistory(char * string){
   entry * temp, *head = history;
   unsigned int size = sizeof(entry);
   temp = (entry*)malloc(size);
-  temp->command_string = string;
+  strcpy(temp->command_string,string);
   temp->next = NULL; 
 
   if (history==NULL){
@@ -100,7 +100,7 @@ void addToHistory(char * string){
     head->next = temp;
     last_command = temp;
   }
-  printf("added to history: %s\n", temp->command_string);
+  // printf("added to history: %s\n", temp->command_string);
 }
 
 void show_history(){
