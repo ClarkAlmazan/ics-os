@@ -79,36 +79,44 @@ void getstring(char *buf,DEX32_DDL_INFO *dev)
     buf[i]=0;
   };
 
+void touch(char * filename){
+  file_PCB * file_handle = openfilex(filename, FILE_READ);;
+  file_handle->ptr->date_modified.year = time_systime.year;
+  file_handle->ptr->date_modified.month = time_systime.month;
+  file_handle->ptr->date_modified.day = time_systime.day;
+  fclose(file_handle);
+}
+
 void settime(char * string){
 	char * u2;
-	DWORD num;  
+	char num;  
 	if (string!=0)
-             {
-                do {           
-                   if (strcmp(string,"-h")==0){
-                      u2=strtok(0," ");
-                      num = atoi(u2);
-                      if(num > 12) printf("Wrong input\n");
-                      else time_systime.hour = num;
-                   }
-                   if (strcmp(string,"-m")==0){
-                      u2=strtok(0," ");
-                      num = atoi(u2);
-                      if(num > 59) printf("Wrong input\n");
-                      else time_systime.min = num;
-                      
-                   }
-                   if (strcmp(string,"-s")==0){
-                      u2=strtok(0," ");
-                      num = atoi(u2);
-                      if(num > 59) printf("wrong input\n");
-                      else time_systime.sec = num;
-                   }
-                   string=strtok(0," ");
-                   } while (string!=0);
-               }else{
-                printf("missing parameters\n");
-               }
+  {
+    do {           
+     if (strcmp(string,"-h")==0){
+        u2=strtok(0," ");
+        num = atoi(u2);
+        if(num > 12) printf("Wrong input\n");
+        else time_systime.hour = num;
+     }
+     if (strcmp(string,"-m")==0){
+        u2=strtok(0," ");
+        num = atoi(u2);
+        if(num > 59) printf("Wrong input\n");
+        else time_systime.min = num;
+        
+     }
+     if (strcmp(string,"-s")==0){
+        u2=strtok(0," ");
+        num = atoi(u2);
+        if(num > 59) printf("wrong input\n");
+        else time_systime.sec = num;
+     }
+     string=strtok(0," ");
+       } while (string!=0);
+   }else{
+    printf("missing parameters\n");
+   }
 }
 
 
@@ -143,24 +151,30 @@ void show_history(){
 }
 
 void chmod(char * filename, char * args){
-  DWORD attb = 0;
+  char attb = 0;
   
   printf("Filename: %s \t", filename);
-  file_PCB *f = openfilex(filename,FILE_APPEND);
+  file_PCB *f = openfilex(filename,FILE_READ);
 
   printf("Attributes: %s\n", args);
   if (strcmp(args,"help")==0){
     printf("chmod is a command that modifies file permissions.\n");
     printf("Usage: chmod <filename> <attributes>\n");
     printf("Attributes format: xrw, --w, x-w, -rw, x--, etc.\n");
+    fclose(f);
     return;
   }
   if (strlen(args)!=3){
     printf("Invalid attributes. Use \"chmod help\" for usage info.\n");
+    fclose(f);
     return;
   } 
+  if (f->ptr->attb & FILE_DIRECTORY){
+    printf("%s is a directory. Aborting...\n", filename);
+    fclose(f);
+    return;
+  }
   else{
-    printf("%c\n", args[0]);
     if (args[0]=='x') attb = attb | FILE_OEXE;
     if (args[1]=='r') attb = attb | FILE_OREAD;
     if (args[2]=='w') attb = attb | FILE_OWRITE;
@@ -873,7 +887,7 @@ int console_execute(const char *str)
                else    
     if (strcmp(u,"ls")==0||strcmp(u,"dir")==0)
                {
-               int style=0, ordering = 0;
+               char style=0, ordering = 0;
                
                u=strtok(0," ");
                
@@ -1061,7 +1075,13 @@ int console_execute(const char *str)
             char * args = strtok(0, "");
             chmod(filename, args);
           }
-          else                       
+          else   
+    if (strcmp(u, "touch")==0)
+          {
+            char * filename = strtok(0, " ");
+            touch(filename);
+          }
+          else                    
     if (u[0]=='$')
              {
                int i, devid;

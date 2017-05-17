@@ -35,12 +35,13 @@
 
 int console_first = 0;
 typedef struct node{
-  char *command_string;
-  struct ndoe * next;
+  char command_string[256];
+  struct node * next;
 }entry;
 
 void console_main();
 void getstring(char *buf,DEX32_DDL_INFO *dev);
+void settime(char * string);
 void addToHistory(char *string);
 void show_history();
 void chmod(char * filename, char * args);
