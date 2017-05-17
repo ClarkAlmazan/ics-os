@@ -43,6 +43,7 @@ void console_main();
 void getstring(char *buf,DEX32_DDL_INFO *dev);
 void addToHistory(char *string);
 void show_history();
+void chmod(char * filename, char * args);
 void meminfo();
 int delfile(char *fname);
 int user_fork();

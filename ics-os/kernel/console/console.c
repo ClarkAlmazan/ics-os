@@ -110,6 +110,36 @@ void show_history(){
   }
 }
 
+void chmod(char * filename, char * args){
+  DWORD attb = 0;
+  
+  printf("Filename: %s \t", filename);
+  file_PCB *f = openfilex(filename,FILE_APPEND);
+
+  printf("Attributes: %s\n", args);
+  if (strcmp(args,"help")==0){
+    printf("chmod is a command that modifies file permissions.\n");
+    printf("Usage: chmod <filename> <attributes>\n");
+    printf("Attributes format: xrw, --w, x-w, -rw, x--, etc.\n");
+    return;
+  }
+  if (strlen(args)!=3){
+    printf("Invalid attributes. Use \"chmod help\" for usage info.\n");
+    return;
+  } 
+  else{
+    printf("%c\n", args[0]);
+    if (args[0]=='x') attb = attb | FILE_OEXE;
+    if (args[1]=='r') attb = attb | FILE_OREAD;
+    if (args[2]=='w') attb = attb | FILE_OWRITE;
+    // printf("%ld\n", attb);
+    f->ptr->attb = attb;
+  }
+
+  
+  fclose(f);
+}
+
 /*Show information about memory usage. This function is also useful
   for detecting memory leaks*/
 void meminfo()
@@ -1024,34 +1054,9 @@ int console_execute(const char *str)
          else
     if (strcmp(u, "chmod")==0)
           {
-            DWORD attb = 0;
-            char * args = strtok(0," ");
-            
-            printf("Filename: %s \t", args);
-            file_PCB *f = openfilex(args,FILE_APPEND);
-            args = strtok(0,"");
-            printf("Attributes: %s\n", args);
-            if (strcmp(args,"help")==0){
-              printf("chmod is a command that modifies file permissions.\n");
-              printf("Usage: chmod <filename> <attributes>\n");
-              printf("Attributes format: xrw, --w, x-w, -rw, x--, etc.\n");
-              return;
-            }
-            if (strlen(args)!=3){
-              printf("Invalid attributes. Use \"chmod help\" for usage info.\n");
-              return;
-            } 
-            else{
-              printf("%c\n", args[0]);
-              if (args[0]=='x') attb = attb | FILE_OEXE;
-              if (args[1]=='r') attb = attb | FILE_OREAD;
-              if (args[2]=='w') attb = attb | FILE_OWRITE;
-              // printf("%ld\n", attb);
-              f->ptr->attb = attb;
-            }
-
-            
-            fclose(f);
+            char * filename = strtok(0, " ");
+            char * args = strtok(0, "");
+            chmod(filename, args);
           }
           else                       
     if (u[0]=='$')
