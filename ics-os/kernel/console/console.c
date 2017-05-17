@@ -79,6 +79,38 @@ void getstring(char *buf,DEX32_DDL_INFO *dev)
     buf[i]=0;
   };
 
+void settime(char * string){
+	char * u2;
+	DWORD num;  
+	if (string!=0)
+             {
+                do {           
+                   if (strcmp(string,"-h")==0){
+                      u2=strtok(0," ");
+                      num = atoi(u2);
+                      if(num > 12) printf("Wrong input\n");
+                      else time_systime.hour = num;
+                   }
+                   if (strcmp(string,"-m")==0){
+                      u2=strtok(0," ");
+                      num = atoi(u2);
+                      if(num > 59) printf("Wrong input\n");
+                      else time_systime.min = num;
+                      
+                   }
+                   if (strcmp(string,"-s")==0){
+                      u2=strtok(0," ");
+                      num = atoi(u2);
+                      if(num > 59) printf("wrong input\n");
+                      else time_systime.sec = num;
+                   }
+                   string=strtok(0," ");
+                   } while (string!=0);
+               }else{
+                printf("missing parameters\n");
+               }
+}
+
 
 
 void addToHistory(char * string){
@@ -945,37 +977,8 @@ int console_execute(const char *str)
              else
       if (strcmp(u,"settime")==0)
              {
-              char *u2;
-              DWORD num;
               u=strtok(0," ");
-              if (u!=0)
-               {
-                   do {           
-                   if (strcmp(u,"-h")==0){
-                      u2=strtok(0," ");
-                      num = atoi(u2);
-                      if(num > 12) printf("Wrong input\n");
-                      else time_systime.hour = num;
-                   }
-                   if (strcmp(u,"-m")==0){
-                      u2=strtok(0," ");
-                      num = atoi(u2);
-                      printf("%d\n",num);
-                      if(num > 59) printf("Wrong input\n");
-                      else time_systime.min = num;
-                      
-                   }
-                   if (strcmp(u,"-s")==0){
-                      u2=strtok(0," ");
-                      num = atoi(u2);
-                      if(num > 59) printf("wrong input\n");
-                      else time_systime.sec = num;
-                   }
-                   u=strtok(0," ");
-                   } while (u!=0);
-               }else{
-                printf("missing parameters\n");
-               }
+            	settime(u);
              }
              else    
     if (strcmp(u,"set")==0)
