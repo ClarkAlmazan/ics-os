@@ -29,8 +29,7 @@
 
 
 entry * history;
-entry * last_command;
-entry * reset_history;
+
 
 /*A console mode get string function terminates
 upon receving \r */
@@ -84,23 +83,21 @@ void getstring(char *buf,DEX32_DDL_INFO *dev)
 
 void addToHistory(char * string){
   entry * temp, *head = history;
-  unsigned int size = sizeof(entry);
+  DWORD size = sizeof(entry);
   temp = (entry*)malloc(size);
   strcpy(temp->command_string,string);
   temp->next = NULL; 
 
-  if (history==NULL){
+  if (head==NULL){
     history = temp;
-    reset_history = temp;
   }
   else {
     while(head->next != NULL){
       head = head->next;
     }
     head->next = temp;
-    last_command = temp;
   }
-  // printf("added to history: %s\n", temp->command_string);
+
 }
 
 void show_history(){
@@ -949,7 +946,7 @@ int console_execute(const char *str)
       if (strcmp(u,"settime")==0)
              {
               char *u2;
-              int num;
+              DWORD num;
               u=strtok(0," ");
               if (u!=0)
                {
@@ -1028,13 +1025,12 @@ int console_execute(const char *str)
     if (strcmp(u, "chmod")==0)
           {
             DWORD attb = 0;
-            char * filename;
-            char * args;
-            filename = strtok(0," ");
+            char * args = strtok(0," ");
+            
+            printf("Filename: %s \t", args);
+            file_PCB *f = openfilex(args,FILE_APPEND);
             args = strtok(0,"");
-            printf("Filename: %s \t", filename);
             printf("Attributes: %s\n", args);
-            file_PCB *f = openfilex(filename,FILE_APPEND);
             if (strcmp(args,"help")==0){
               printf("chmod is a command that modifies file permissions.\n");
               printf("Usage: chmod <filename> <attributes>\n");
