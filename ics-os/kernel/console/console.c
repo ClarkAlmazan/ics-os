@@ -29,6 +29,7 @@
 
 
 entry * history;
+entry * last_command;
 
 
 /*A console mode get string function terminates
@@ -40,7 +41,7 @@ void getstring(char *buf,DEX32_DDL_INFO *dev)
     do
     {
     c=getch();
-    if (c=='\r'||c=='\n'||c==0xa) break;
+    if (c=='\r'||c=='\n'||c==0xa || c==KEY_UP) break;
     if (c=='\b' || (unsigned char)c == 145)
        {
        if(i>0)
@@ -124,18 +125,23 @@ void settime(char * string){
 void addToHistory(char * string){
   entry * temp, *head = history;
   DWORD size = sizeof(entry);
+  if (strcmp(string, KEY_UP)==0 || strlen(string)==0) return;
   temp = (entry*)malloc(size);
   strcpy(temp->command_string,string);
   temp->next = NULL; 
 
   if (head==NULL){
+    temp->prev = NULL;
     history = temp;
+
   }
   else {
     while(head->next != NULL){
       head = head->next;
     }
+    temp->prev = head;
     head->next = temp;
+    last_command = temp;
   }
 
 }
@@ -150,20 +156,29 @@ void show_history(){
   }
 }
 
+void up_command(){
+  sendtokeyb(last_command->command_string,&_q);
+  if (last_command->prev!=NULL) last_command = last_command->prev;
+  else return;
+}
+
+
+
 void chmod(char * filename, char * args){
   char attb = 0;
   
   printf("Filename: %s \t", filename);
-  file_PCB *f = openfilex(filename,FILE_READ);
-
-  printf("Attributes: %s\n", args);
-  if (strcmp(args,"help")==0){
+  if (strcmp(filename,"help")==0){
     printf("chmod is a command that modifies file permissions.\n");
     printf("Usage: chmod <filename> <attributes>\n");
     printf("Attributes format: xrw, --w, x-w, -rw, x--, etc.\n");
-    fclose(f);
     return;
   }
+
+  file_PCB *f = openfilex(filename,FILE_APPEND);
+
+  printf("Attributes: %s\n", args);
+  
   if (strlen(args)!=3){
     printf("Invalid attributes. Use \"chmod help\" for usage info.\n");
     fclose(f);
@@ -1139,7 +1154,9 @@ void console_main()
     char last[256]="";
     char console_fmt[256]="%cdir% %% ";
     char console_prompt[256]="cmd >";
-    
+    char up[2];
+    up[0] = KEY_UP;
+    up[1] = 0;
     
     DWORD ptr;
     
@@ -1188,8 +1205,8 @@ void console_main()
 
 
    
-    if (strcmp(s,"ù")==0)
-               sendtokeyb(last,&_q);
+    if (strcmp(s,up)==0)
+               up_command();
                else
     if (strcmp(s,"!!")==0)
               {

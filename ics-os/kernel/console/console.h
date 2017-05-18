@@ -37,6 +37,7 @@ int console_first = 0;
 typedef struct node{
   char command_string[256];
   struct node * next;
+  struct node * prev;
 }entry;
 
 void console_main();

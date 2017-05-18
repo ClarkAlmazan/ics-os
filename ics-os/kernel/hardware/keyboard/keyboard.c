@@ -452,7 +452,7 @@ char getch()
    unsigned int code,c;
    do
    {
-    keyboard_wait();
+    // keyboard_wait();
     c=deq(&_q,&code);
    }
    while (c==-1);
